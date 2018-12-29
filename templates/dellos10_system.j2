@@ -29,12 +29,22 @@ dellos_system:
         tcp_udp_selection:
           - field: l4-source-port
             state: present
+    clock:
+        timezone:
+            name: EST
+            offset_hours: 1
+            offset_mins: 0
 
 
 ###############################################}
 {% if dellos_system is defined and dellos_system %}
 {% if dellos_system.hostname is defined and dellos_system.hostname %}
 hostname {{ dellos_system.hostname }}
+{% endif %}
+{% if dellos_system.clock is defined and dellos_system.clock.timezone is defined %}
+clock timezone {{ dellos_system.clock.timezone.name }} {{ dellos_system.clock.timezone.offset_hours }} {{ dellos_system.clock.timezone.offset_mins }}
+{% else %}
+no clock timezone
 {% endif %}
 {% for key,value in dellos_system.items() %}
   {% if key == "hardware_forwarding" %}
